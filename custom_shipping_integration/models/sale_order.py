@@ -8,7 +8,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     api_token = fields.Char(string="API Token")
-    token_timestamp = fields.Datetime(string="Token Timestamp")
+    token_exp = fields.Datetime(string="Token Expiration")
 
     def _authenticate_api(self):
         url = "https://homologacion.entregarweb.com/api/v1/auth/token"
@@ -22,16 +22,21 @@ class SaleOrder(models.Model):
         if response.status_code == 200:
             token = response.json().get('access_token')
             self.api_token = token
-            self.token_timestamp = fields.Datetime.now()
+            self.token_exp = fields.Datetime.now()
             return token
         else:
             _logger.error("Failed to authenticate API")
             return None
 
+    def is_token_exp(self):
+        if not self.token_exp: #si token_exp no tiene valor o no existe, retorna verdadero (como caducado)
+            return True
+        return fields.Datetime.now() >= token_exp
+        
     def _get_valid_token(self):
-        if not self.api_token or not self.token_timestamp or (fields.Datetime.now() - self.token_timestamp).total_seconds() > 6 * 3600:
-            return self._authenticate_api()
-        return self.api_token
+        if not self.is_token_exp():
+            return self.api_token
+        return self._authenticate_api()
 
     def _create_shipping(self, receives, address, location, postal_code, items, email=None, references=None):
         url = "https://homologacion.entregarweb.com/api/v1/shipping/new"
