@@ -31,7 +31,7 @@ class SaleOrder(models.Model):
     def is_token_exp(self):
         if not self.token_exp: #si token_exp no tiene valor o no existe, retorna verdadero (como caducado)
             return True
-        return fields.Datetime.now() >= token_exp
+        return fields.Datetime.now() >= self.token_exp
         
     def _get_valid_token(self):
         if not self.is_token_exp():
