@@ -55,7 +55,7 @@ class SaleOrder(models.Model):
         if references:
             payload['references'] = references
 
-        response = requests.post(url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, json=payload)
         if response.status_code == 200:
             return response.json()
         else:
