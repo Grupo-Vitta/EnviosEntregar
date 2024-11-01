@@ -4,8 +4,8 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class DeliveryCarrier(models.Model):
+    _inherit = 'delivery.carrier'
 
     api_token = fields.Char(string="API Token")
     token_exp = fields.Datetime(string="Token Expiration")
@@ -63,7 +63,7 @@ class SaleOrder(models.Model):
             return None
 
     def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
+        res = super(DeliveryCarrier, self).action_confirm()
 
         if self.delivery_method_id.name == 'Método de Envío Externo':
             items = "[\"3,100.0,200.0,30.4\"]"
