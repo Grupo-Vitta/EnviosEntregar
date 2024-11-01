@@ -18,7 +18,7 @@ class DeliveryCarrier(models.Model):
             'client_secret': 'cb4979d3152ee649fb7f94b3ba4ac2625baa803d1ae43e0b7642b6b105b78758'
         }
 
-        response = requests.post(url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, json=payload)
         if response.status_code == 200:
             token = response.json().get('access_token')
             self.api_token = token
